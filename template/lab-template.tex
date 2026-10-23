@@ -1,0 +1,163 @@
+%% ============================================================
+%%  TeXperiment : lab implementation template (pandoc template)
+%%  No cover page. Layout:
+%%    Header (Name | Batch | Roll No) -> Title -> Aim -> Theory
+%%    -> Steps -> Code (optional) -> Output -> Conclusion
+%%  Edit ONLY the "STUDENT DETAILS" block below.
+%% ============================================================
+\documentclass[11pt,a4paper]{article}
+
+%% ---------------- STUDENT DETAILS (edit once) ---------------
+\newcommand{\studentname}{$if(name)$$name$$else$Jay Kerkar$endif$}
+\newcommand{\studentbatch}{$if(batch)$$batch$$else$Batch A$endif$}
+\newcommand{\studentroll}{$if(roll)$$roll$$else$Roll No.\ 16$endif$}
+%% -------------------------------------------------------------
+
+%% ---------------- Fonts & encoding ---------------------------
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{mathpazo}                 % Palatino text + math
+  \usepackage{courier}                  % monospace for code
+\else
+  \usepackage{fontspec}
+\fi
+\usepackage{microtype}
+
+%% ---------------- Page layout --------------------------------
+\usepackage[a4paper,margin=2.3cm,top=3cm,headheight=22pt,headsep=14pt,footskip=1.2cm]{geometry}
+\usepackage{setspace}
+\setstretch{1.08}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\definecolor{accent}{RGB}{31,58,120}
+\definecolor{codebg}{RGB}{247,248,250}
+\definecolor{coderule}{RGB}{200,205,215}
+\definecolor{kw}{RGB}{31,58,120}
+\definecolor{cm}{RGB}{90,130,90}
+\definecolor{st}{RGB}{160,60,60}
+
+%% ---------------- Header / footer ----------------------------
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textbf{\studentname}}
+\fancyhead[C]{\small\textbf{\studentbatch}}
+\fancyhead[R]{\small\textbf{\studentroll}}
+\fancyfoot[C]{\small Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.8pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{accent}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrulewidth}{0pt}
+
+%% ---------------- Section headings ---------------------------
+\usepackage{titlesec}
+\setcounter{secnumdepth}{-\maxdimen}   % headings are not numbered
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{accent}}{}{0pt}{}[\vspace{0.35em}{\color{accent!40}\titlerule[0.6pt]}]
+\titlespacing*{\section}{0pt}{1.6em}{0.9em}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{accent}}{}{0pt}{}
+\titlespacing*{\subsection}{0pt}{1em}{0.4em}
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\itshape}{}{0pt}{}
+\titlespacing*{\subsubsection}{0pt}{0.8em}{0.3em}
+
+%% ---------------- Lists (Steps are numbered) -----------------
+\usepackage{enumitem}
+\setlist[enumerate,1]{leftmargin=2em,label=\textbf{\arabic*.},itemsep=0.35em,topsep=0.2em}
+\setlist[itemize,1]{leftmargin=2em,itemsep=0.25em,topsep=0.2em}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+%% ---------------- Figures (Output / screenshots) -------------
+\usepackage{graphicx}
+\usepackage[export]{adjustbox}
+% every screenshot is scaled down to fit the page (never enlarged)
+\let\texperimentincludegraphics\includegraphics
+\renewcommand{\includegraphics}[2][]{%
+  \texperimentincludegraphics[max width=0.92\linewidth,max height=0.42\textheight,keepaspectratio,#1]{#2}}
+\usepackage{float}
+\floatplacement{figure}{H}             % keep figures exactly where written
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf,labelsep=period,justification=centering,skip=6pt}
+\captionsetup[figure]{name=Fig.}
+\captionsetup[lstlisting]{justification=raggedright,singlelinecheck=false}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{%
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi%
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+\makeatother
+
+%% ---------------- Code listings ------------------------------
+\usepackage{listings}
+\lstset{
+  basicstyle=\fontsize{9}{11}\selectfont\ttfamily,
+  keywordstyle=\color{kw}\bfseries,
+  commentstyle=\color{cm}\itshape,
+  stringstyle=\color{st},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=8pt,
+  backgroundcolor=\color{codebg},
+  frame=single,
+  rulecolor=\color{coderule},
+  framerule=0.6pt,
+  xleftmargin=1.6em,
+  framexleftmargin=1.4em,
+  breaklines=true,
+  breakatwhitespace=false,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  tabsize=4,
+  captionpos=b,
+  aboveskip=0.8em,
+  belowskip=0.4em,
+  inputencoding=utf8,
+  extendedchars=true
+}
+
+%% ---------------- Tables, links, misc (pandoc needs these) ---
+\usepackage{longtable,booktabs,array,calc}
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\IfFileExists{ulem.sty}{\usepackage[normalem]{ulem}}{\providecommand{\sout}[1]{##1}}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\urlstyle{same}
+$if(highlighting-macros)$
+$highlighting-macros$
+$endif$
+
+\begin{document}
+
+%% ---------------- Title line (no cover page) -----------------
+$if(title)$
+\begin{center}
+$if(lab)$
+{\small\bfseries\color{accent}\textsc{Lab Implementation $lab$}}\\[0.25em]
+$endif$
+{\LARGE\bfseries $title$}
+$if(subject)$\\[0.35em]{\normalsize\itshape $subject$}$endif$
+$if(date)$\\[0.2em]{\small Date: $date$}$endif$
+\end{center}
+\vspace{-0.4em}
+$endif$
+
+$body$
+
+\end{document}
