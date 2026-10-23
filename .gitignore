@@ -1,0 +1,5 @@
+# build intermediates (executed notebooks and PDFs live in the "Experiment N" folders)
+_build/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
